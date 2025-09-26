@@ -6,6 +6,7 @@ public class Rot13 {
     //Arrays a nivell de classe
     static final char[] arrayLletresMin = "aàábcçdeèéfghiíìïjklmnñoóòpqrstuúùüvwxyz".toCharArray();
     static final char[] arrayLletresMaj = "AÀÁBCÇDEÈÉFGHIÌÍÏJKLMNÑOÓÒPQRSTUÚÙÜVWXYZ".toCharArray();
+    
     public static void main(String[] args) {
         String exemple1 = "Hola";
         String exemple2 = "Òwúi";
@@ -55,7 +56,8 @@ public class Rot13 {
         }
         return paraulaDesencriptada;
     }
-
+    /* funcio que recorre l'array, i quan coincideixi la lletra calcula la posició de la 
+    lletra xifrada i retorna aquesta lletra */
     public static char xifrarLletra(char lletra, char[] abecedari){
         int posicio = 0;
         for (char c : abecedari){
@@ -65,6 +67,7 @@ public class Rot13 {
                 if (posicio >= abecedari.length){
                     posicio -= abecedari.length;                        
                 }
+                // retorna la lletra xifrada
                 return abecedari[posicio];
             }
             posicio++;
@@ -72,6 +75,8 @@ public class Rot13 {
         return lletra;
     }
 
+    /* funció que recorre l'array, i quan coincideixi la lletra calcula la posició de la 
+    lletra desxifrada i retorna aquesta lletra */
     public static char desxifrarLletra(char lletra, char[] abecedari){
         int posicio = 0;
         //recorregut de l'abecedari (array)
@@ -82,6 +87,7 @@ public class Rot13 {
                 if (posicio < 0){
                     posicio += abecedari.length;
                 }
+                // retorna la lletra desxifrada
                 return abecedari[posicio];
             }
             posicio++;
