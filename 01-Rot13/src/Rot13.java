@@ -26,7 +26,7 @@ public class Rot13 {
         for(int i = 0; i < paraula.length(); i++){
             // tornem la lletra en caracter
             char lletra = paraula.charAt(i);
-            //si la lletra es majuscula
+            //si la lletra és majuscula
             if(Character.isUpperCase(lletra)){
                 paraulaEncriptada += xifrarLletra(lletra, arrayLletresMaj);
             } else if(Character.isLowerCase(lletra)){    // si la lletra es minuscula
