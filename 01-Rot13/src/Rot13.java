@@ -17,21 +17,18 @@ public class Rot13 {
         String resultatDesencrip = desxifraRot13(exemple2);
         System.out.println("Desxifrat :" + resultatDesencrip);
     }
-
     public static String xifraRot13(String paraula){
-        //String que va obtenint els caràcters un cop encriptada la lletra
         String paraulaEncriptada = "";
         
         // recorregut de la paraula hola
         for(int i = 0; i < paraula.length(); i++){
             // tornem la lletra en caracter
             char lletra = paraula.charAt(i);
-            //si la lletra és majuscula
             if(Character.isUpperCase(lletra)){
                 paraulaEncriptada += xifrarLletra(lletra, arrayLletresMaj);
-            } else if(Character.isLowerCase(lletra)){    // si la lletra es minuscula
+            } else if(Character.isLowerCase(lletra)){    
                 paraulaEncriptada += xifrarLletra(lletra, arrayLletresMin);
-            } else {   // si la lletra no es majuscula ni minuscula
+            } else {   
                 paraulaEncriptada += lletra;
             }
         }
@@ -45,10 +42,10 @@ public class Rot13 {
         for(int i = 0; i < paraula.length(); i++){
             // tornem la lletra en caracter
             char lletra = paraula.charAt(i);
-            //si la lletra es majuscula
+            
             if(Character.isUpperCase(lletra)){
                 paraulaDesencriptada += desxifrarLletra(lletra, arrayLletresMaj);
-            } else if(Character.isLowerCase(lletra)){    // si la lletra es minuscula
+            } else if(Character.isLowerCase(lletra)){    
                 paraulaDesencriptada += desxifrarLletra(lletra, arrayLletresMin);
             } else {        
                 paraulaDesencriptada += lletra;
@@ -79,7 +76,6 @@ public class Rot13 {
     lletra desxifrada i retorna aquesta lletra */
     public static char desxifrarLletra(char lletra, char[] abecedari){
         int posicio = 0;
-        //recorregut de l'abecedari (array)
         for (char c : abecedari){
             if (lletra == c){
                 posicio = posicio - 13;
