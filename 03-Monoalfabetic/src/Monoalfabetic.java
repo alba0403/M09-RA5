@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.Collections; 
-import java.util.List;
 
 public class Monoalfabetic {
     static final char[] arrayLletresMaj = "AÁÀBCÇDEÉÈFGHIÌÍÏJKLMNÑOÓÒPQRSTUÚÙÜVWXYZ".toCharArray();
@@ -9,8 +8,6 @@ public class Monoalfabetic {
     public static void main(String[] args) {
         String[] exemples = {"ABC", "XYZ", "Hola, Mr. calçot", "Perdó, per tu què és?"};
 
-        permutaAlfabet(arrayLletresMaj);
-
         System.out.println("Xifrat \n-------------");
         for(int i = 0; i < exemples.length; i++){
             System.out.println(exemples[i] + " => "+ xifraMonoAlfa(exemples[i]));
@@ -18,7 +15,8 @@ public class Monoalfabetic {
 
         System.out.println("\nDesxifrat \n-------------");
         for(int i = 0; i < exemples.length; i++){
-            //System.out.println( + " => ");
+            String paraulaXifrada = xifraMonoAlfa(exemples[i]);
+            System.out.println( paraulaXifrada + " => " + desxifraMonoAlfa(paraulaXifrada));
         }
     }
 
@@ -32,8 +30,8 @@ public class Monoalfabetic {
         Collections.shuffle(llistaAlfPermutat);
 
         char[] arrayAlfPermutat = new char[llistaAlfPermutat.size()];
-        for(char c : arrayAlfPermutat){
-            arrayAlfPermutat[c] = llistaAlfPermutat.get(c);
+        for(int i = 0; i < arrayAlfPermutat.length; i++){
+            arrayAlfPermutat[i] = llistaAlfPermutat.get(i);
         }
         return arrayAlfPermutat;
     }
@@ -47,15 +45,17 @@ public class Monoalfabetic {
             if(Character.isUpperCase(lletra)){
                 paraulaEncriptada += xifrarLletra(lletra, arrayLletresMaj);
             } else if (Character.isLowerCase(lletra)){
-                paraulaEncriptada += xifrarLletra(lletra, arrayLletresMaj);
+                char lletraXifrada = xifrarLletra(Character.toUpperCase(lletra), arrayLletresMaj);
+                paraulaEncriptada += Character.toLowerCase(lletraXifrada);
+            } else {
+                paraulaEncriptada += lletra;
             }
         }
-        return null;
+        return paraulaEncriptada;
     }
 
     public static char xifrarLletra(char lletra, char[] abecedari){
         int posicio = 0;
-        abecedari = abecedari.toLowerCase(); //tractant de tornar l'abecedari a minuscules
         for (char c : abecedari){
             if (lletra == c){
                 return permutacio[posicio];
@@ -67,6 +67,32 @@ public class Monoalfabetic {
 
     //li passas el string i ho va desxifrant
     public static String desxifraMonoAlfa(String frase){
-        return null;
+        String paraulaDesencriptada = "";
+
+        for(int i = 0; i < frase.length(); i++){
+            char lletra = frase.charAt(i);
+            if(Character.isUpperCase(lletra)){
+                paraulaDesencriptada += desxifrarLletra(lletra, permutacio);
+            } else if (Character.isLowerCase(lletra)){
+                char lletraXifrada = desxifrarLletra(Character.toUpperCase(lletra), permutacio);
+                paraulaDesencriptada += Character.toLowerCase(lletraXifrada);
+            } else {
+                paraulaDesencriptada += lletra;
+            }
+        }
+        return paraulaDesencriptada;
+    }
+
+    /* funció que recorre l'array, i quan coincideixi la lletra 
+    retorna aquesta lletra del alfabet normal q es troba a la mateixa posicio*/
+    public static char desxifrarLletra(char lletra, char[] permutacio){
+        int posicio = 0;
+        for (char c : permutacio){
+            if (lletra == c){
+                return arrayLletresMaj[posicio];
+            }
+            posicio++;
+        }
+        return lletra;
     }
 }
