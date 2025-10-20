@@ -31,22 +31,18 @@ public class Polialfabetic {
     }
     /*Si se crean dos instancias de Random con la misma semilla 
     y se realiza la misma secuencia de llamadas a métodos para 
-    cada una, generarán y devolverán secuencias de números idénticas.
-    cal una variable per guardar l'alfabet permutat*/
-    public static Random initRandom(Long clau){
+    cada una, generarán y devolverán secuencias de números idénticas.*/
+    public static void initRandom(Long clau){
         rndm = new Random(clau);
-        return rndm;
     }
 
-
-    //TODO: mètode que genera una permutació del alfabet
-    //TODO: i ho emmagatzema en una var global shuffle utilitza random com a segon paremetre
+    //mètode que genera una permutació del alfabet i ho emmagatzema en una var global
     public static void permutaAlfabet(){
         ArrayList<Character> llistaAlfPermutat = new ArrayList<Character>();
         for(char c : arrayLletresMaj){
             llistaAlfPermutat.add(c);
         }
-        Collections.shuffle(llistaAlfPermutat, initRandom(clauSecreta));
+        Collections.shuffle(llistaAlfPermutat, rndm);
 
         
         for(int i = 0; i < alfpermutat.length; i++){
@@ -55,8 +51,7 @@ public class Polialfabetic {
 
     }
 
-    //TODO: xifra la cadena que passem amb xifrat polialfabetic
-    //TODO: i retorna aquest string
+    //xifra la cadena que passem amb xifrat polialfabetic i retorna aquest string
     public static String xifraPoliAlfa(String msg){
         String paraulaEncriptada = "";
 
@@ -64,8 +59,9 @@ public class Polialfabetic {
             char lletra = msg.charAt(i);
             if(Character.isUpperCase(lletra)){
                 permutaAlfabet();
-                paraulaEncriptada += xifrarLletra(lletra );
+                paraulaEncriptada += xifrarLletra(lletra);
             } else if (Character.isLowerCase(lletra)){
+                permutaAlfabet();
                 char lletraXifrada = xifrarLletra(Character.toUpperCase(lletra));
                 paraulaEncriptada += Character.toLowerCase(lletraXifrada);
             } else {
@@ -73,16 +69,40 @@ public class Polialfabetic {
             }
         }
         return paraulaEncriptada;
-    } 
-        
+    }  
     
-
-    //TODO: desxifra la cadena que passem i torna la cadena desxifrada
+    //desxifra la cadena que passem i torna la cadena desxifrada
     public static String desxifraPoliAlfa(String msgXifrat){
-        return null;
+        String paraulaDesencriptada = "";
+
+        for(int i = 0; i < msgXifrat.length(); i++){
+            char lletra = msgXifrat.charAt(i);
+            if(Character.isUpperCase(lletra)){
+                permutaAlfabet();
+                paraulaDesencriptada += desxifrarLletra(lletra);
+            } else if (Character.isLowerCase(lletra)){
+                permutaAlfabet();
+                char lletraXifrada = desxifrarLletra(Character.toUpperCase(lletra));
+                paraulaDesencriptada += Character.toLowerCase(lletraXifrada);
+            } else {
+                paraulaDesencriptada += lletra;
+            }
+        }
+        return paraulaDesencriptada;
     }
 
-    //TODO: funcion que cifra cada letra en especifico
+    public static char desxifrarLletra(char lletra){
+        int posicio = 0;
+        for (char c : alfpermutat){
+            if (lletra == c){
+                return arrayLletresMaj[posicio];
+            }
+            posicio++;
+        }
+        return lletra;
+    }
+
+    //función que cifra cada letra en especifico
     public static char xifrarLletra(char lletra){
         int posicio = 0;
         for (char c : arrayLletresMaj){
