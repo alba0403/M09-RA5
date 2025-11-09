@@ -103,13 +103,27 @@ public class XifradorAES implements Xifrador{
     }
 
 
-
-    //TODO 
+    @Override
     public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
-        return null;
+        try {
+            byte[] dadesXifrades = xifraAES(msg, clau);
+            return new TextXifrat(dadesXifrades);
+        } catch (Exception e) {
+            // Mostra l'error i surt
+            System.err.println("Error al xifrar amb AES: " + e.getMessage());
+            System.exit(1); // termina el programa
+            return null; // aixo no s'exectuta, pero si no ho possem dona error
+        }
     }
 
+    @Override
     public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
-        return null;
+        try {
+            return desxifraAES(xifrat.getBytes(), clau);
+        } catch (Exception e) {
+            System.err.println("Error al desxifrar amb AES: " + e.getMessage());
+            System.exit(1); 
+            return null;
+        }
     }
 }

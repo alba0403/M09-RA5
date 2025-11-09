@@ -65,11 +65,8 @@ public class XifradorRotX implements Xifrador{
         int posicio = 0;
         for (char c : abecedari){
             if (lletra == c){
-                posicio = posicio + desplaçament;
-                // si la posicio és més llarga que l'array, es resta la llargada de l'array a la posició
-                if (posicio >= abecedari.length) {
-                    posicio -= abecedari.length;                        
-                }
+                posicio = (posicio + desplaçament) % abecedari.length;
+                if (posicio < 0) posicio += abecedari.length;
                 // retorna la lletra xifrada
                 return abecedari[posicio];
             }
@@ -83,11 +80,8 @@ public class XifradorRotX implements Xifrador{
         int posicio = 0;
         for (char c : abecedari){
             if (lletra == c){
-                posicio = posicio - desplaçament;
-                // si la posicio és més curta que l'array, es suma la llargada de l'array a la posició
-                if (posicio < 0){
-                    posicio += abecedari.length;
-                }
+                posicio = (posicio - desplaçament) % abecedari.length;
+                if (posicio < 0) posicio += abecedari.length;
                 // retorna la lletra desxifrada
                 return abecedari[posicio];
             }
@@ -103,14 +97,32 @@ public class XifradorRotX implements Xifrador{
         }
     }
 
-    //TODO 
-    public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
-        return null;
-    }
-
-    public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
-        return null;
-    }
     
+    @Override 
+    public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
+        try {
+            int desplaçament = Integer.parseInt(clau);
+            if (desplaçament < 0 || desplaçament > 40) {
+                throw new ClauNoSuportada("Clau de RotX ha de ser un sencer de 0 a 40");
+            }
+            String textXifrat = xifraRotX(msg, desplaçament);
+            return new TextXifrat(textXifrat.getBytes());
+        } catch (NumberFormatException e) {
+            throw new ClauNoSuportada("Clau de RotX ha de ser un sencer de 0 a 40");
+        }
+    }
 
+    @Override
+    public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
+        try {
+            int desplaçament = Integer.parseInt(clau);
+            if (desplaçament < 0 || desplaçament > 40) {
+                throw new ClauNoSuportada("Clau de RotX ha de ser un sencer de 0 a 40");
+            }
+            String text = new String(xifrat.getBytes());
+            return desxifraRotX(text, desplaçament);
+        } catch (NumberFormatException e) {
+            throw new ClauNoSuportada("Clau de RotX ha de ser un sencer de 0 a 40");
+        }
+    }
 }

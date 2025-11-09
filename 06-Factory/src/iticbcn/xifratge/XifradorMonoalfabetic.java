@@ -103,12 +103,22 @@ public class XifradorMonoalfabetic implements Xifrador{
     }
 
 
-    //TODO 
+    @Override
     public TextXifrat xifra(String msg, String clau) throws ClauNoSuportada {
-        return null;
+        if (clau != null ) {
+            throw new ClauNoSuportada("Xifratxe monoalfabètic no suporta clau != null");
+        }
+        String resultat = xifraMonoAlfa(msg);
+        return new TextXifrat(resultat.getBytes());
     }
 
+    @Override
     public String desxifra(TextXifrat xifrat, String clau) throws ClauNoSuportada {
-        return null;
+        if (clau != null ) {
+            throw new ClauNoSuportada("Xifratxe monoalfabètic no suporta clau != null");
+        }
+        String text = new String(xifrat.getBytes());
+        return desxifraMonoAlfa(text);
     }
+
 }
