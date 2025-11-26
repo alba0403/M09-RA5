@@ -1,16 +1,19 @@
 import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
+import java.security.spec.KeySpec;
 import java.util.HexFormat;
 
-public class Hashes {
+import javax.crypto.SecretKeyFactory;
+import javax.crypto.spec.PBEKeySpec;
 
+public class Hashes {
+    static int npass;
     
     public static void main(String[] args) throws Exception {
 
         //Comptador de les passwords provades en força bruta
-        int npass = 0;
+        npass = 0;
 
-        String salt = "qpoweiruañslkdfjz";
+        String salt = "qpoweiruañslkdfjz"; //es crea per a que dues pw amb el mateix text tinguin un hash diferent
 
         String pw = "aaabF!"; //password que atacarem amb la força bruta
 
@@ -46,26 +49,127 @@ public class Hashes {
     //METODES
 
     // metode per obtindre el hash sha-512 amb salt
-    public String getSHA512AmbSalt(String pw, String salt) throws NoSuchAlgorithmException{
+    public String getSHA512AmbSalt(String pw, String salt) throws Exception{
         
-        MessageDigest md = MessageDigest.getInstance("SHA-512");
-        String combined = pw + salt;
-        byte[] hashBytes = md.digest(combined.getBytes());
+        MessageDigest messDig = MessageDigest.getInstance("SHA-512");
+        String passSalt = pw + salt;
+        byte[] hashBytes = messDig.digest(passSalt.getBytes());
+        
+        //ho tornem a un string hexadecimal i ho retornem
         HexFormat hex = HexFormat.of();
-        
         return hex.formatHex(hashBytes);
     
     }
 
-    public String getPBKDF2AmbSalt(String pw, String salt){
-        return null;
+    // metode per obtenir el hash pbkdf2 amb el salt
+    public String getPBKDF2AmbSalt(String pw, String salt) throws Exception{
+        
+        int iteracions = 10000;
+        int longuitudBits = 256; //longuitud del hash
+        KeySpec spec = new PBEKeySpec(pw.toCharArray(), salt.getBytes(), iteracions, longuitudBits);
+        
+        //fem el hash
+        SecretKeyFactory secrKeyFact = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
+        byte[] hashBytes = secrKeyFact.generateSecret(spec).getEncoded();
+        
+        //ho tornem a un string hexadecimal i fem el return
+        HexFormat hex = HexFormat.of();
+        return hex.formatHex(hashBytes);
     }
 
-    public String forcaBruta(String alg, String hash, String salt){
-        return null;
+    // metode per probar una contrasenya generada
+    private boolean provaPassword(char[] pw, String alg, String hash, String salt) throws Exception {
+        npass++;
+
+        String generat = null;
+        String actual = new String(pw); // convertim char[] a String
+
+        // generem el hash segons l'algorisme
+        if (alg.equals("SHA-512")) {
+            generat = getSHA512AmbSalt(actual, salt);
+        } else if (alg.equals("PBKDF2")) {
+            generat = getPBKDF2AmbSalt(actual, salt);
+        }
+
+        // comparem amb el hash que volem trencar
+        return generat.equals(hash);
     }
 
+
+    // metode per atacar els hashs amb força bruta
+    public String forcaBruta(String alg, String hash, String salt) throws Exception {
+        final String charset = "abcdefABCDEF1234567890!"; 
+        npass = 0; // reiniciem el comptador de les contrasenyes probades
+
+        
+        for (int i = 1; i <= 6; i++) {
+
+            char[] pw = new char[i]; // array q conté la pw actual
+
+            
+            for (int i0 = 0; i0 < charset.length(); i0++) {
+                pw[0] = charset.charAt(i0);
+
+                if (i == 1) {
+                    if (provaPassword(pw, alg, hash, salt)) return new String(pw);
+                    continue;
+                }
+
+                for (int i1 = 0; i1 < charset.length(); i1++) {
+                    pw[1] = charset.charAt(i1);
+
+                    if (i == 2) {
+                        if (provaPassword(pw, alg, hash, salt)) return new String(pw);
+                        continue;
+                    }
+
+                    for (int i2 = 0; i2 < charset.length(); i2++) {
+                        pw[2] = charset.charAt(i2);
+
+                        if (i == 3) {
+                            if (provaPassword(pw, alg, hash, salt)) return new String(pw);
+                            continue;
+                        }
+
+                        for (int i3 = 0; i3 < charset.length(); i3++) {
+                            pw[3] = charset.charAt(i3);
+
+                            if (i == 4) {
+                                if (provaPassword(pw, alg, hash, salt)) return new String(pw);
+                                continue;
+                            }
+
+                            for (int i4 = 0; i4 < charset.length(); i4++) {
+                                pw[4] = charset.charAt(i4);
+
+                                if (i == 5) {
+                                    if (provaPassword(pw, alg, hash, salt)) return new String(pw);
+                                    continue;
+                                }
+
+                                for (int i5 = 0; i5 < charset.length(); i5++) {
+                                    pw[5] = charset.charAt(i5);
+
+                                    // si la longitud és 6, probem el password
+                                    if (provaPassword(pw, alg, hash, salt)) 
+                                        return new String(pw);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        return null; // si no es troba la contrasenya
+    }
+
+    // metode per calcular l'interval de temps
     public String getInterval(long t1, long t2){
-        return null;
+        long milisegons = t2 - t1;           
+        long segons = milisegons / 1000;          
+        long milsegRestants = milisegons % 1000;  
+
+        return segons + "s " + milsegRestants + "ms"; 
     }
 }
