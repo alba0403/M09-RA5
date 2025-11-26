@@ -46,9 +46,9 @@ public class Hashes {
         }
     }
 
-    //METODES
+    //MÈTODES
 
-    // metode per obtindre el hash sha-512 amb salt
+    // mètode per obtindre el hash sha-512 amb salt
     public String getSHA512AmbSalt(String pw, String salt) throws Exception{
         
         MessageDigest messDig = MessageDigest.getInstance("SHA-512");
@@ -61,7 +61,7 @@ public class Hashes {
         return hash;
     }
 
-    // metode per obtenir el hash pbkdf2 amb el salt
+    // mètode per obtenir el hash pbkdf2 amb el salt
     public String getPBKDF2AmbSalt(String pw, String salt) throws Exception{
         
         int iteracions = 1000;
@@ -78,7 +78,7 @@ public class Hashes {
         return hash;
     }
 
-    // metode per probar una contrasenya generada
+    // mètode per probar una contrasenya generada
     private boolean provaPassword(char[] pw, String alg, String hash, String salt) throws Exception {
         npass++;
 
@@ -96,7 +96,7 @@ public class Hashes {
     }
 
 
-    // metode per atacar els hashs amb força bruta
+    // mètode per atacar els hashs amb força bruta
     public String forcaBruta(String alg, String hash, String salt) throws Exception {
         final String charset = "abcdefABCDEF123456789!"; 
         npass = 0; // reiniciem el comptador de les contrasenyes probades
@@ -160,7 +160,7 @@ public class Hashes {
         return null; // si no es troba la contrasenya
     }
 
-    // metode per calcular l'interval de temps
+    // mètode per calcular l'interval de temps
     public String getInterval(long t1, long t2){
         long ms = t2 - t1;
 
