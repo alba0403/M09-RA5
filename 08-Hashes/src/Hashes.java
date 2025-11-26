@@ -55,26 +55,27 @@ public class Hashes {
         String passSalt = pw + salt;
         byte[] hashBytes = messDig.digest(passSalt.getBytes());
         
-        //ho tornem a un string hexadecimal i ho retornem
+        //ho tornem en un string i ho retornem
         HexFormat hex = HexFormat.of();
-        return hex.formatHex(hashBytes);
-    
+        String hash = hex.formatHex(hashBytes);
+        return hash;
     }
 
     // metode per obtenir el hash pbkdf2 amb el salt
     public String getPBKDF2AmbSalt(String pw, String salt) throws Exception{
         
-        int iteracions = 10000;
-        int longuitudBits = 256; //longuitud del hash
+        int iteracions = 1000;
+        int longuitudBits = 128; //longuitud del hash
         KeySpec spec = new PBEKeySpec(pw.toCharArray(), salt.getBytes(), iteracions, longuitudBits);
         
         //fem el hash
         SecretKeyFactory secrKeyFact = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
         byte[] hashBytes = secrKeyFact.generateSecret(spec).getEncoded();
         
-        //ho tornem a un string hexadecimal i fem el return
+        //ho tornem a un string i fem el return
         HexFormat hex = HexFormat.of();
-        return hex.formatHex(hashBytes);
+        String hash = hex.formatHex(hashBytes);
+        return hash;
     }
 
     // metode per probar una contrasenya generada
@@ -90,22 +91,18 @@ public class Hashes {
         } else if (alg.equals("PBKDF2")) {
             generat = getPBKDF2AmbSalt(actual, salt);
         }
-
-        // comparem amb el hash que volem trencar
+        // ho comparem amb el hash que volem trencar
         return generat.equals(hash);
     }
 
 
     // metode per atacar els hashs amb força bruta
     public String forcaBruta(String alg, String hash, String salt) throws Exception {
-        final String charset = "abcdefABCDEF1234567890!"; 
+        final String charset = "abcdefABCDEF123456789!"; 
         npass = 0; // reiniciem el comptador de les contrasenyes probades
 
-        
         for (int i = 1; i <= 6; i++) {
-
             char[] pw = new char[i]; // array q conté la pw actual
-
             
             for (int i0 = 0; i0 < charset.length(); i0++) {
                 pw[0] = charset.charAt(i0);
@@ -160,16 +157,26 @@ public class Hashes {
                 }
             }
         }
-
         return null; // si no es troba la contrasenya
     }
 
     // metode per calcular l'interval de temps
     public String getInterval(long t1, long t2){
-        long milisegons = t2 - t1;           
-        long segons = milisegons / 1000;          
-        long milsegRestants = milisegons % 1000;  
+        long ms = t2 - t1;
 
-        return segons + "s " + milsegRestants + "ms"; 
+        long dies = ms /(24L*60*60*1000);
+        ms %= (24L*60*60*1000);
+
+        long hores = ms /(60L*60*1000);
+        ms %= (60L*60*1000);
+
+        long minuts = ms /(60L*1000);
+        ms %= (60L*1000);
+
+        long segons = ms/1000;
+        long milisegons = ms%1000;
+
+        return dies + " dies / " + hores + " hores / " + minuts + " minuts / "
+                + segons + " segons / " + milisegons + " millis";
     }
 }
